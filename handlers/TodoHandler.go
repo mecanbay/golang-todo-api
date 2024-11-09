@@ -4,6 +4,7 @@ import (
 	"golang-todo-api/dto"
 	"golang-todo-api/services"
 	"golang-todo-api/validators"
+	"strconv"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -40,4 +41,18 @@ func (h TodoHandler) CreateTodo(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusInternalServerError).JSON(response)
 	}
 	return c.Status(fiber.StatusOK).JSON(&response)
+}
+
+func (h TodoHandler) GetTodoById(c *fiber.Ctx) error {
+	Id, err := strconv.Atoi(c.Params("id"))
+	if err != nil {
+		response := &dto.GetTodoByIdResponse{Status: false, Message: validators.ErrInvalidId.Error()}
+		return c.Status(fiber.StatusBadRequest).JSON(response)
+	}
+
+	response := h.TodoService.GetTodoById(uint(Id))
+	if !response.Status {
+		return c.Status(fiber.StatusNotFound).JSON(response)
+	}
+	return c.Status(fiber.StatusOK).JSON(response)
 }

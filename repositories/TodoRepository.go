@@ -13,6 +13,7 @@ type TodoRepository struct {
 
 type ITodoRepository interface {
 	Create(todo *dto.CreateTodoRequest) error
+	GetById(Id uint) (*models.Todo, error)
 }
 
 func NewTodoRepository(db *gorm.DB) *TodoRepository {
@@ -21,4 +22,10 @@ func NewTodoRepository(db *gorm.DB) *TodoRepository {
 
 func (r TodoRepository) Create(todo *models.Todo) error {
 	return r.db.Create(todo).Error
+}
+
+func (r TodoRepository) GetById(Id uint) (*models.Todo, error) {
+	var todo models.Todo
+	err := r.db.First(&todo, Id)
+	return &todo, err.Error
 }
