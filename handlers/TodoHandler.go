@@ -60,21 +60,18 @@ func (h TodoHandler) GetAllTodos(c *fiber.Ctx) error {
 }
 
 func (h TodoHandler) UpdateTodo(c *fiber.Ctx) error {
-	// Todo Id Params Conversion
 	Id, err := strconv.Atoi(c.Params("id"))
 	if err != nil {
 		response := &dto.UpdateTodoResponse{Status: false, Message: err.Error()}
 		return c.Status(fiber.StatusBadRequest).JSON(response)
 	}
 
-	// Todo Body Parse
 	var request dto.UpdateTodoRequest
 	if err := c.BodyParser(&request); err != nil {
 		response := &dto.UpdateTodoResponse{Status: false, Message: err.Error()}
 		return c.Status(fiber.StatusBadRequest).JSON(response)
 	}
 
-	// Todo Update request validation
 	err = validators.UpdateTodoRequestValitator(&request)
 	if err != nil {
 		response := &dto.UpdateTodoResponse{Status: false, Message: err.Error()}
