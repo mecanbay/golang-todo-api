@@ -13,4 +13,5 @@ func LoadRoutes(app *fiber.App, handler *handlers.TodoHandler) {
 	todo.Get("/", handler.GetAllTodos)
 	todo.Get("/:id", handler.GetTodoById)
 	todo.Post("/", handler.CreateTodo)
+	todo.Put("/:id", handler.UpdateTodo)
 }
