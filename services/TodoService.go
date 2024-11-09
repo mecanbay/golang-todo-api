@@ -14,6 +14,7 @@ type TodoService struct {
 type ITodoService interface {
 	CreateTodo(todo *dto.CreateTodoRequest) *dto.CreateTodoResponse
 	GetTodoById(Id uint) *dto.GetTodoByIdResponse
+	GetAllTodos() *dto.GetAllTodosResponse
 }
 
 func NewTodoService(repository *repositories.TodoRepository) *TodoService {
@@ -21,8 +22,6 @@ func NewTodoService(repository *repositories.TodoRepository) *TodoService {
 }
 
 func (s TodoService) CreateTodo(request *dto.CreateTodoRequest) *dto.CreateTodoResponse {
-	var response dto.CreateTodoResponse
-
 	todo := &models.Todo{
 		Title:       request.Title,
 		Desc:        request.Desc,
@@ -31,27 +30,24 @@ func (s TodoService) CreateTodo(request *dto.CreateTodoRequest) *dto.CreateTodoR
 
 	err := s.TodoRepository.Create(todo)
 	if err != nil {
-		response.Status = false
-		response.Message = err.Error()
-		return &response
+		return &dto.CreateTodoResponse{Status: false, Message: err.Error()}
 	}
 
-	response.Status = true
-	response.Message = "success"
-	return &response
+	return &dto.CreateTodoResponse{Status: true, Message: "success"}
 }
 
 func (s TodoService) GetTodoById(Id uint) *dto.GetTodoByIdResponse {
-	var response dto.GetTodoByIdResponse
 	todo, err := s.TodoRepository.GetById(Id)
 	if err != nil {
-		response.Status = false
-		response.Message = validators.ErrTodoNotFound.Error()
-		return &response
+		return &dto.GetTodoByIdResponse{Status: false, Message: validators.ErrTodoNotFound.Error()}
 	}
+	return &dto.GetTodoByIdResponse{Status: true, Message: "success", Result: todo}
+}
 
-	response.Status = true
-	response.Message = "success"
-	response.Result = todo
-	return &response
+func (s TodoService) GetAllTodos() *dto.GetAllTodosResponse {
+	todos, err := s.TodoRepository.GetAll()
+	if err != nil {
+		return &dto.GetAllTodosResponse{Status: false, Message: err.Error()}
+	}
+	return &dto.GetAllTodosResponse{Status: true, Message: "success", Result: todos}
 }

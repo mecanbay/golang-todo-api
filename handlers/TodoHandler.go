@@ -20,19 +20,13 @@ func NewTodoHandler(service *services.TodoService) *TodoHandler {
 func (h TodoHandler) CreateTodo(c *fiber.Ctx) error {
 	var request *dto.CreateTodoRequest
 	if err := c.BodyParser(&request); err != nil {
-		response := &dto.CreateTodoResponse{
-			Status:  false,
-			Message: err.Error(),
-		}
+		response := &dto.CreateTodoResponse{Status: false, Message: err.Error()}
 		return c.Status(fiber.StatusBadRequest).JSON(response)
 	}
 
 	err := validators.CreateTodoRequestValidator(request)
 	if err != nil {
-		response := &dto.CreateTodoResponse{
-			Status:  false,
-			Message: err.Error(),
-		}
+		response := &dto.CreateTodoResponse{Status: false, Message: err.Error()}
 		return c.Status(fiber.StatusBadRequest).JSON(response)
 	}
 
@@ -51,6 +45,14 @@ func (h TodoHandler) GetTodoById(c *fiber.Ctx) error {
 	}
 
 	response := h.TodoService.GetTodoById(uint(Id))
+	if !response.Status {
+		return c.Status(fiber.StatusNotFound).JSON(response)
+	}
+	return c.Status(fiber.StatusOK).JSON(response)
+}
+
+func (h TodoHandler) GetAllTodos(c *fiber.Ctx) error {
+	response := h.TodoService.GetAllTodos()
 	if !response.Status {
 		return c.Status(fiber.StatusNotFound).JSON(response)
 	}

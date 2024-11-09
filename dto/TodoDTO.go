@@ -18,3 +18,9 @@ type GetTodoByIdResponse struct {
 	Message string       `json:"msg"`
 	Result  *models.Todo `json:"result"`
 }
+
+type GetAllTodosResponse struct {
+	Status  bool          `json:"status"`
+	Message string        `json:"msg"`
+	Result  []models.Todo `json:"result"`
+}
