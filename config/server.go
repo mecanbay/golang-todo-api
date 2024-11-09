@@ -2,14 +2,13 @@ package config
 
 import (
 	"fmt"
-	"golang-todo-api/routes"
 	"log"
 	"strconv"
 
 	"github.com/gofiber/fiber/v2"
 )
 
-func NewFiberApp(env *Env) {
+func NewFiberApp(env *Env) *fiber.App {
 	preforkValue, err := strconv.ParseBool(env.FIBER_PREFORK)
 	if err != nil {
 		log.Println("FIBER_PREFORK only accepts a bool data type.")
@@ -22,7 +21,10 @@ func NewFiberApp(env *Env) {
 	}
 
 	app := fiber.New(config)
-	routes.LoadRoutes(app)
-	app.Listen(fmt.Sprintf("%v:%v", env.FIBER_HOST, env.FIBER_PORT))
 
+	return app
+}
+
+func ListenFiberApp(app *fiber.App, env *Env) {
+	app.Listen(fmt.Sprintf("%v:%v", env.FIBER_HOST, env.FIBER_PORT))
 }
