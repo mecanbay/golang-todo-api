@@ -13,7 +13,8 @@ type TodoService struct {
 
 type ITodoService interface {
 	CreateTodo(todo *dto.CreateTodoRequest) *dto.CreateTodoResponse
-	UpdatTodo(todo *dto.UpdateTodoRequest) *dto.UpdateTodoResponse
+	UpdateTodo(todo *dto.UpdateTodoRequest) *dto.UpdateTodoResponse
+	DeleteTodo(Id uint) *dto.DeleteTodoResponse
 	GetTodoById(Id uint) *dto.GetTodoByIdResponse
 	GetAllTodos() *dto.GetAllTodosResponse
 }
@@ -68,4 +69,17 @@ func (s TodoService) UpdateTodo(Id uint, request *dto.UpdateTodoRequest) *dto.Up
 		return &dto.UpdateTodoResponse{Status: false, Message: err.Error()}
 	}
 	return &dto.UpdateTodoResponse{Status: true, Message: "success"}
+}
+
+func (s TodoService) DeleteTodo(Id uint) *dto.DeleteTodoResponse {
+	todo, err := s.TodoRepository.GetById(uint(Id))
+	if err != nil {
+		return &dto.DeleteTodoResponse{Status: false, Message: err.Error()}
+	}
+
+	err = s.TodoRepository.Delete(todo)
+	if err != nil {
+		return &dto.DeleteTodoResponse{Status: false, Message: err.Error()}
+	}
+	return &dto.DeleteTodoResponse{Status: true, Message: "success"}
 }

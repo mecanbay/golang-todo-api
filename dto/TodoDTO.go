@@ -35,3 +35,8 @@ type UpdateTodoResponse struct {
 	Status  bool   `json:"status"`
 	Message string `json:"msg"`
 }
+
+type DeleteTodoResponse struct {
+	Status  bool   `json:"status"`
+	Message string `json:"msg"`
+}

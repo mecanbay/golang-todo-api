@@ -14,6 +14,7 @@ type TodoRepository struct {
 type ITodoRepository interface {
 	Create(todo *dto.CreateTodoRequest) error
 	Update(todo *dto.UpdateTodoRequest) error
+	Delete(todo *models.Todo) error
 	GetById(Id uint) (*models.Todo, error)
 	GetAll() ([]models.Todo, error)
 }
@@ -40,4 +41,8 @@ func (r TodoRepository) GetAll() ([]models.Todo, error) {
 
 func (r TodoRepository) Update(todo *models.Todo) error {
 	return r.db.Save(todo).Error
+}
+
+func (r TodoRepository) Delete(todo *models.Todo) error {
+	return r.db.Delete(todo).Error
 }

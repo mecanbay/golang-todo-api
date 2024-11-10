@@ -85,3 +85,17 @@ func (h TodoHandler) UpdateTodo(c *fiber.Ctx) error {
 
 	return c.Status(fiber.StatusOK).JSON(response)
 }
+
+func (h TodoHandler) DeleteTodo(c *fiber.Ctx) error {
+	Id, err := strconv.Atoi(c.Params("id"))
+	if err != nil {
+		response := &dto.DeleteTodoResponse{Status: true, Message: err.Error()}
+		return c.Status(fiber.StatusBadRequest).JSON(response)
+	}
+
+	response := h.TodoService.DeleteTodo(uint(Id))
+	if !response.Status {
+		return c.Status(fiber.StatusBadRequest).JSON(response)
+	}
+	return c.Status(fiber.StatusOK).JSON(response)
+}
